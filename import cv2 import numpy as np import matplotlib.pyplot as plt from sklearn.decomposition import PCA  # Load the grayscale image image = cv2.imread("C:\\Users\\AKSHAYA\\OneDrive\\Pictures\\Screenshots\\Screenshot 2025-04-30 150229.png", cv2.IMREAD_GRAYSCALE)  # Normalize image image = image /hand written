@@ -1,0 +1,20 @@
+import cv2
+import numpy as np
+from sklearn.naive_bayes import GaussianNB
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.datasets import fetch_openml
+d = fetch_openml("mnist_784")
+x_train, x_test, y_train, y_test = train_test_split(d.data.to_numpy(), d.target.to_numpy(), test_size=0.2, random_state=42)
+x_train_flat = x_train.reshape(-1, 784) / 255
+x_test_flat = x_test.reshape(-1, 784) / 255
+model = GaussianNB()
+model.fit(x_train_flat[:5000], y_train[:5000])
+y_pred = model.predict(x_test_flat[:1000])
+for i in range(10):
+    plt.subplot(1, 10, i + 1)
+    plt.imshow(x_test_flat[i].reshape(28, 28), cmap='gray')
+    plt.title(f"pred: {y_pred[i]}\ntrue: {y_test[i]}")
+    plt.axis('off')
+plt.tight_layout()
+plt.show()
